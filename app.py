@@ -1,90 +1,30 @@
-from autogen_agentchat.agents import AssistantAgent
-from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
-from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_agentchat.ui import Console
-from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
-from azure.identity import DefaultAzureCredential
-from azure.ai.projects import AIProjectClient
-# from azure.ai.projects.models import BingGroundingTool
 import asyncio
-from dotenv import load_dotenv
-import os
+from buffett_indicator_agent import agent
+from autogen_agentchat.messages import TextMessage
+from autogen_core import CancellationToken
 
-load_dotenv(override=True)
+async def chat_with_agent():
+    print("Welcome to the Buffett Indicator Chat!")
+    print("Type 'exit' to quit")
+    
+    while True:
+        user_input = input("\nYou: ")
+        
+        if user_input.lower() == 'exit':
+            print("Goodbye!")
+            break
+            
+        print("\nProcessing...")
+        response = await agent.on_messages(
+            [TextMessage(content=user_input, source="user")],
+            cancellation_token=CancellationToken(),
+        )
+        print(f"\nThinking...: {response.inner_message}")
+        print(f"\nBuffett Indicator Agent: {response.chat_message.content}")
 
-# Initialize environment variables
-API_KEY = os.getenv("api_key")
-PROJECT_CONNECTION_STRING = os.getenv("PROJECT_CONNECTION_STRING")
-MODEL_DEPLOYMENT_NAME = os.getenv("MODEL_DEPLOYMENT_NAME")
-MODEL_API_VERSION = os.getenv("MODEL_API_VERSION")
-AZURE_ENDPOINT = os.getenv("AZURE_ENDPOINT")
-# BING_CONNECTION_NAME = os.getenv("BING_CONNECTION_NAME")
-
-print("API_KEY: ", API_KEY)
-print("PROJECT_CONNECTION_STRING: ", PROJECT_CONNECTION_STRING)
-print("MODEL_DEPLOYMENT_NAME: ", MODEL_DEPLOYMENT_NAME)
-print("MODEL_API_VERSION: ", MODEL_API_VERSION)
-print("AZURE_ENDPOINT: ", AZURE_ENDPOINT)
-# print("BING_CONNECTION_NAME: ", BING_CONNECTION_NAME)
+if __name__ == "__main__":
+    asyncio.run(chat_with_agent())
 
 
-###############################################################################
-#                              Azure OpenAI Client
-###############################################################################
-az_model_client = AzureOpenAIChatCompletionClient(
-    azure_deployment=MODEL_DEPLOYMENT_NAME,
-    model=MODEL_DEPLOYMENT_NAME,
-    api_version=MODEL_API_VERSION,
-    azure_endpoint=AZURE_ENDPOINT,
-    api_key=API_KEY
-)
-print("az_model_client: ", az_model_client)
-
-###############################################################################
-#                              AI Project Client
-###############################################################################
-project_client = AIProjectClient.from_connection_string(
-    credential=DefaultAzureCredential(),
-    conn_str=PROJECT_CONNECTION_STRING,
-)
-print("project_client: ", project_client)
-
-# # Retrieve the Bing connection
-# bing_connection = project_client.connections.get(connection_name=BING_CONNECTION_NAME)
-# conn_id = bing_connection.id
-
-###############################################################################
-#                                TOOLS
-###############################################################################
-async def get_GDP_tool() -> str:
-    """
-    A dedicated function focusing on get latest GDP data.
-    """
-    print(f"[get_GDP_tool] Fetching latest GDP data...")
-
-###############################################################################
-#                              AGENT FUNCTIONS
-###############################################################################
-#
-# These "agent functions" are how each assistant actually calls the above tools.
-# The difference is that each AssistantAgent below will have 'tools=[...]'
-# pointing to these Python functions. Then the agent can call them
-# (directly or via the round-robin workflow).
-#
-###############################################################################
-
-# -- Trend Data
-async def get_GDP_agent() -> str:
-    """Agent function for get data of GDP, calls get_GDP_tool."""
-    print("call get_GDP_agent")
-    return await get_GDP_tool()
-
-###############################################################################
-#                         ASSISTANT AGENT DEFINITIONS
-###############################################################################
-#
-# In RoundRobinGroupChat, each of these agents is called in turn. The system_message
-# clarifies each agent’s role, and the 'tools=[...]' argument lists the Python
-# functions that agent can call.
-#
-###############################################################################
+# example query:
+# What is the current Buffett Indicator for the U.S. market? 

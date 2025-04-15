@@ -6,12 +6,14 @@ from autogen_core.models import UserMessage, ModelFamily
 
 from typing import Dict, List, Optional   
 from dotenv import load_dotenv
-load_dotenv(override=True)
 
 from autogen_core.tools import FunctionTool
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.messages import TextMessage
 from autogen_core import CancellationToken
+
+# Load environment variables
+load_dotenv(override=True)
 
 # Step 1: Create the tool functions
 def get_us_gdp() -> float:
@@ -76,7 +78,16 @@ market_cap_tool = FunctionTool(
 buffett_indicator_tool = FunctionTool(
     calculate_buffett_indicator, description="Calculate the Buffett Indicator (market cap to GDP ratio) and provide the raw values along with the calculated percentage.")
 
-# Step 3: Create the agent
+###############################################################################
+#                            STEP 3: CREATE AGENT 
+###############################################################################
+#
+# These "agent functions" are how each assistant actually calls the above tools.
+# The difference is that each AssistantAgent below will have 'tools=[...]'
+# pointing to these Python functions. Then the agent can call them
+# (directly or via the round-robin workflow).
+#
+###############################################################################
 agent = AssistantAgent(
     name="buffett_indicator_assistant",
     model_client=client,
