@@ -56,7 +56,11 @@ print("project_client: ", project_client)
 ###############################################################################
 #                                TOOLS
 ###############################################################################
-
+async def get_GDP_tool() -> str:
+    """
+    A dedicated function focusing on get latest GDP data.
+    """
+    print(f"[get_GDP_tool] Fetching latest GDP data...")
 
 ###############################################################################
 #                              AGENT FUNCTIONS
@@ -66,5 +70,21 @@ print("project_client: ", project_client)
 # The difference is that each AssistantAgent below will have 'tools=[...]'
 # pointing to these Python functions. Then the agent can call them
 # (directly or via the round-robin workflow).
+#
+###############################################################################
+
+# -- Trend Data
+async def get_GDP_agent() -> str:
+    """Agent function for get data of GDP, calls get_GDP_tool."""
+    print("call get_GDP_agent")
+    return await get_GDP_tool()
+
+###############################################################################
+#                         ASSISTANT AGENT DEFINITIONS
+###############################################################################
+#
+# In RoundRobinGroupChat, each of these agents is called in turn. The system_message
+# clarifies each agent’s role, and the 'tools=[...]' argument lists the Python
+# functions that agent can call.
 #
 ###############################################################################
