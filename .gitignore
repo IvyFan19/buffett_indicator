@@ -1,0 +1,7 @@
+__pycache__/
+venv/
+.specstory/
+.chainlit/
+node_modules/
+.env
+.DS_Store
