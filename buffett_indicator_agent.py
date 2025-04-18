@@ -80,12 +80,7 @@ buffett_indicator_tool = FunctionTool(
 
 ###############################################################################
 #                            STEP 3: CREATE AGENT 
-###############################################################################
-#
 # These "agent functions" are how each assistant actually calls the above tools.
-# The difference is that each AssistantAgent below will have 'tools=[...]'
-# pointing to these Python functions. Then the agent can call them
-# (directly or via the round-robin workflow).
 #
 ###############################################################################
 agent = AssistantAgent(
