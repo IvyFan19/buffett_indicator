@@ -64,7 +64,7 @@ client = AzureAIChatCompletionClient(
         "function_calling": True,
         "vision": True,
         "structured_output": True,
-        "family": ModelFamily.GPT_4O,
+        "family": ModelFamily.GPT_4o,
     },
 )
 
@@ -116,3 +116,4 @@ async def assistant_run() -> None:
 
 if __name__ == "__main__":
     asyncio.run(assistant_run()) 
+

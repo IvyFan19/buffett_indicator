@@ -7,3 +7,6 @@ azure-ai-projects
 
 aiohttp
 autogen-ext
+
+pandas>=1.3.0
+matplotlib>=3.4.0
